@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+<!--  
+jdbc.sqlonly    : Logs only SQL
+jdbc.sqltiming  : Logs the SQL, post-execution, including timing execution statistics
+jdbc.audit      : Logs ALL JDBC calls except for ResultSets
+jdbc.resultset  : all calls to ResultSet objects are logged
+jdbc.connection : Logs connection open and close events
+-->
+
+    <logger name="jdbc" level="OFF"/>
+    <logger name="jdbc.sqlonly" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="DEBUG" additivity="false">
+         <appender-ref ref="console" />
+    </logger>
+    <logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="com.aice.repo" level="OFF"/>
+
+    <!-- root -->
+    <root level="info">
+        <appender-ref ref="console" />
+    </root>
+</included>

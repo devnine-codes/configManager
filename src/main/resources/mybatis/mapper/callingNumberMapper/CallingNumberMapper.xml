@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aice.callingNumberManager.dao.CallingNumberDao">
+  <insert id="insertCallingNumber">
+    INSERT INTO aice.tbl_company_biz_phone
+    (solution_type,
+     user_type,
+     fk_company,
+     biz_phone_num,
+     ploonet_yn,
+     reg_status,
+     company_name,
+     biz_phone_name,
+     inbound_yn,
+     outbound_yn,
+     main_phone_num,
+     biz_cate_step_1,
+     biz_cate_step_2,
+     biz_cate_step_3,
+     fk_company_dept,
+     fk_company_staff,
+     phone_yn,
+     sms_yn,
+     use_yn,
+     staff_phone_num,
+     staff_cert_dt,
+     staff_name,
+     channel_type,
+     use_order,
+     fk_writer,
+     fd_regdate,
+     fk_modifier,
+     fd_moddate)
+    VALUES(#{solutionType}, #{userType}, #{fkCompany}, #{bizPhoneNum}, #{ploonetYn}, #{regStatus},  #{companyName}, #{bizPhoneName}, 'Y', #{outboundYn}, #{mainPhoneNum}, '', '', '', NULL, #{fkCompanyStaff}, 'Y', 'Y', 'Y', #{staffPhoneNum}, NULL, #{staffName}, 'A1503', 1, 1, SYSDATE(), NULL, NULL);
+  </insert>
+  <update id="updateCallingNumber">
+
+    UPDATE tbl_company_biz_phone as phone
+      inner join tbl_company as company on company.pk_company = phone.fk_company
+    set phone.biz_phone_name  = #{bizPhoneName},
+        phone.use_yn          = #{useYn},
+        phone.staff_name      = #{staffName},
+        phone.staff_phone_num = #{staffPhoneNum},
+        phone.fd_regdate      = Now()
+    where company.fd_company_status_code = 'A1601'
+      and company.pk_company = #{fkCompany}
+      and phone.pk_company_phone = #{callingId};
+
+  </update>
+  <delete id="deleteCompanyCallingNumber">
+    DELETE phone
+    FROM tbl_company_biz_phone as phone
+           INNER JOIN tbl_company as company
+                      ON company.pk_company = phone.fk_company
+    WHERE phone.pk_company_phone = #{callingId};
+  </delete>
+
+
+  <select id="selectAll" resultType="com.aice.callingNumberManager.vo.CallingNumberVo">
+    select *
+    from tbl_company_biz_phone
+  </select>
+  <select id="selectAllByCompanyId"
+    resultType="com.aice.callingNumberManager.vo.CallingNumberVo">
+    select *
+    from tbl_company_biz_phone AS callingNum
+           inner join tbl_company as company
+                      on company.pk_company = callingNum.fk_company
+    where company.fd_company_status_code = 'A1601'
+      and fk_company = #{companyId}
+  </select>
+</mapper>

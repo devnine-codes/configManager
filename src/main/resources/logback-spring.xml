@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+    
+    <property name="pattern_layout" value="%d{yyyy-MM-d'T'HH:mm:ss.SSS}|%-5level| \\(%F:%line\\) |%msg%n" />
+    <property name="pattern_service" value="%d{yyyy-MM-d'T'HH:mm:ss.SSS}|%-5level|%msg%n" />
+    
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${pattern_layout}</pattern>
+        </encoder>
+    </appender>
+    <property name="app_name" value="configManager"></property>
+    <include resource="logback/logback-${spring.profiles.active}.xml"/>
+</configuration>

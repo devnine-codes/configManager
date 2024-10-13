@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aice.emailManager.dao.EmailDao">
+  <insert id="insertNewEmail">
+    insert into tbl_conf_email( fk_company
+    , use_type
+    , conf_name
+    , conf_host
+    , conf_port
+    , conf_id
+    , conf_pw
+    , conf_disp_name
+    , use_auth_yn
+    , use_tls_yn
+    , use_ssl_yn
+    , use_yn
+    , conf_key
+    , conf_val
+    , fk_writer
+    , fd_regdate)
+    values (#{fkCompany}, #{useType}, #{confName}, #{confHost}, #{confPort}, #{confId},
+    func_crypt_enc(#{confPw}),
+    #{confDispName},
+    <choose>
+      <when test='#{useType}.equals("B1009")'>
+        #{useAuthYn},
+        #{useTlsYn}
+      </when>
+      <otherwise>
+        'N',
+        'N'
+      </otherwise>
+    </choose>
+    ,#{useSslYn}
+    ,#{useYn}
+    ,#{confKey}
+    ,#{confVal}
+    ,#{fkWriter}
+    , NOW()
+    )
+  </insert>
+
+  <update id="updateEmail">
+    UPDATE tbl_conf_email as email
+    inner join tbl_company as company on company.pk_company = email.fk_company
+    set email.conf_name = #{confName},
+    email.conf_host = #{confHost},
+    email.conf_port = #{confPort},
+    email.conf_id = #{confId},
+    email.conf_pw = func_crypt_enc(#{confPw}),
+    email.conf_disp_name = #{confDispName},
+    email.use_yn = #{useYn},
+    email.use_ssl_yn = #{useSslYn},
+    email.conf_key = #{confKey},
+    email.conf_val = #{confVal},
+    email.fk_modifier = #{fkModifier},
+    email.use_type = #{useType},
+    <choose>
+      <when test='#{useType}.equals("B1009")'>
+        email.use_auth_yn =  #{useAuthYn},
+        email.use_tls_yn = #{useTlsYn},
+      </when>
+      <otherwise>
+        email.use_auth_yn =  'N',
+        email.use_tls_yn =  'N',
+      </otherwise>
+    </choose>
+    email.fd_moddate = Now()
+    where company.fd_company_status_code = 'A1601'
+    and company.pk_company = #{fkCompany}
+    and email.pk_conf_email = #{pkConfEmail};
+
+  </update>
+  <delete id="deleteEmail">
+    DELETE email
+    FROM tbl_conf_email as email
+           INNER JOIN tbl_company as company
+                      ON company.pk_company = email.fk_company
+    WHERE company.fd_company_status_code = 'A1601'
+      and email.pk_conf_email = #{emailId}
+
+  </delete>
+
+  <select id="selectAll" resultType="com.aice.emailManager.vo.EmailVo">
+    select *
+    from tbl_conf_email
+  </select>
+
+  <select id="selectEmailListByCompanyId" resultType="com.aice.emailManager.vo.EmailVo">
+    <if test='sortBy.equals("outgoing")'>
+      SELECT pk_conf_email,fk_company,conf_name, (
+      case use_type
+      when 'B1009' then '발신'
+      when 'B1016' THEN '수신'
+      WHEN 'B1017' then '수신'
+      END )
+      as 'use_type',
+      conf_disp_name,use_yn,fd_regdate
+      from tbl_conf_email
+      where fk_company = #{companyId}
+      AND use_type = 'B1009'
+    </if>
+    <if test='sortBy.equals("reception")'>
+      SELECT pk_conf_email,fk_company,conf_name, (
+      case use_type
+      when 'B1009' then '발신'
+      when 'B1016' THEN '수신'
+      WHEN 'B1017' then '수신'
+      END )
+      as 'use_type',
+      conf_disp_name,use_yn,fd_regdate
+      from tbl_conf_email
+      where fk_company = #{companyId}
+      AND (use_type = 'B1017' OR use_type = 'B1016')
+    </if>
+    <if test='sortBy.equals("all")'>
+      SELECT pk_conf_email,fk_company,conf_name, (
+      case use_type
+      when 'B1009' then '발신'
+      when 'B1016' THEN '수신'
+      WHEN 'B1017' then '수신'
+      END )
+      as 'use_type',
+      conf_disp_name,use_yn,fd_regdate
+      from tbl_conf_email
+      where fk_company = #{companyId}
+    </if>
+  </select>
+
+</mapper>

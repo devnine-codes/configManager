@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aice.phoneLineManager.dao.PhoneLineDao">
+
+  <select id="selectAll" resultType="com.aice.callingNumberManager.vo.CallingNumberVo">
+        select * from tbl_company_biz_phone;
+    </select>
+
+    <select id="selectPhoneLine" resultType="com.aice.callingNumberManager.vo.CallingNumberVo">
+        select * from tbl_company_biz_phone where pk_company_phone = #{pkCompanyPhone}
+    </select>
+
+    <select id="selectPhoneLineList" resultType="com.aice.callingNumberManager.vo.CallingNumberVo">
+        select * from tbl_company_biz_phone where ploonet_yn = 'Y'
+    </select>
+
+    <insert id="insertPhoneLine" parameterType="com.aice.callingNumberManager.vo.CallingNumberVo">
+        INSERT INTO aice.tbl_company_biz_phone
+        (solution_type,
+         user_type,
+         fk_company,
+         biz_phone_num,
+         ploonet_yn,
+         reg_status,
+         bot_status,
+         doc_status,
+         doc_main_status,
+         call_forward_status,
+         company_name,
+         biz_phone_name,
+         inbound_yn,
+         outbound_yn,
+         main_phone_num,
+         biz_cate_step_1,
+         biz_cate_step_2,
+         biz_cate_step_3,
+         fk_company_dept,
+         fk_company_staff,
+         phone_yn,
+         sms_yn,
+         use_yn,
+         staff_phone_num,
+         staff_cert_dt,
+         staff_name,
+         channel_type,
+         use_order,
+         fk_writer,
+         fd_regdate,
+         fk_modifier,
+         fd_moddate)
+        VALUES(#{solutionType}, #{userType}, #{fkCompany}, #{bizPhoneNum}, #{ploonetYn}, #{regStatus}, NULL, NULL, NULL, NULL, #{companyName}, #{bizPhoneName}, 'Y', #{outboundYn}, #{mainPhoneNum}, '', '', '', NULL, #{fkCompanyStaff}, 'Y', 'Y', 'Y', #{staffPhoneNum}, NULL, #{staffName}, 'A1503', 1, 1, SYSDATE(), NULL, NULL);
+    </insert>
+
+    <update id="updateNumbers" parameterType="com.aice.callingNumberManager.vo.CallingNumberVo">
+        update tbl_company_biz_phone
+           set company_name = #{companyName} , biz_phone_name = #{bizPhoneName}
+         where pk_company_phone = #{pkCompanyPhone}
+    </update>
+
+    <delete id="deleteNumbers" parameterType="com.aice.callingNumberManager.vo.CallingNumberVo">
+        delete from tbl_company_biz_phone where pk_company_phone = #{pkCompanyPhone}
+    </delete>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <appender name="service_rolling" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_DIR}/${app_name}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_DIR}/%d{yyyy/MM/dd, aux}/${app_name}.%d{yyyy.MM.dd}.%i.log</FileNamePattern>
+            <maxFileSize>20MB</maxFileSize>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${pattern_service}</pattern>
+        </layout>
+    </appender>
+
+    <logger name="jdbc" level="OFF"/>
+    <logger name="jdbc.sqlonly" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="DEBUG" additivity="false">
+        <appender-ref ref="console" />
+        <appender-ref ref="service_rolling" />
+    </logger>
+    <logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
+        <appender-ref ref="console" />
+        <appender-ref ref="service_rolling" />
+    </logger>
+
+    <logger name="com.ploonet.wc.service.ServiceApiVoiceGwMng" level="DEBUG" additivity="false">
+        <appender-ref ref="console" />
+        <appender-ref ref="service_rolling" />
+    </logger>
+
+    <logger name="com.aice.repo" level="OFF"/>
+
+    <!-- root -->
+    <root level="info">
+        <appender-ref ref="console" />
+        <appender-ref ref="service_rolling" />
+    </root>
+</included>

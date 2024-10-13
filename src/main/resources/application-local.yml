@@ -1,0 +1,125 @@
+server:
+    port: 8151
+    servlet:
+        context-path: /aice/configManager
+    error:
+        include-exception: false
+        include-stacktrace: never
+        path: /error
+        whitelabel:
+            enabled: true
+    compression:
+        enabled: true
+        min-response-size: 1024
+        mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml,multipart/formdata
+    http2:
+        enabled: true
+    shutdown: graceful
+
+spring:
+    config:
+        activate:
+            on-profile: local
+    datasource:
+        url: jdbc:log4jdbc:mariadb://dev-maria.ploonet.com:9033/aice?autoReconnect=true&allowMultiQueries=true&useUnicode=true&characterEncoding=utf8
+        driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        username: be_config_manager
+        password: 847BD8B7135AA8C0084EDF98D2D230DC7767070B3DA7480FF9096F07BD5D1583
+        hikari:
+            # 최대 3초까지만 pool 대기
+            connectionTimeout: 30000
+            # 최소 유휴 커넥션 수
+            minimumIdle: 5
+            # 최대 풀 크기
+            maximumPoolSize: 20
+            # 유휴 커넥션 최대 유지 시간
+            idleTimeout: 600000
+            # 커넥션의 최대 생명 주기
+            maxLifetime: 1800000
+            # 커넥션 테스트 쿼리
+            connectionTestQuery: SELECT 1
+    devtools:
+        livereload:
+            enabled: true
+        restart:
+            enabled: true
+            additional-paths: src
+    jackson:
+        parser:
+            allow-unquoted-field-names: true
+            allow-single-quotes: true
+        serialization:
+            indent-output: true
+            write-dates-as-timestamps: false
+        default-property-inclusion: non-null
+        deserialization:
+            fail-on-unknown-properties: false
+            read-unknown-enum-values-as-null: true
+        time-zone: Asia/Seoul
+    lifecycle:
+        timeout-per-shutdown-phase: 20s
+    main:
+      allow-bean-definition-overriding: true
+
+management:
+    endpoints:
+        web:
+            base-path: /health
+            path-mapping:
+                health: check
+            exposure:
+                include: "*"
+    endpoint:
+        health:
+            show-details: always
+        prometheus:
+            enabled: true
+
+
+
+## API G/W 호출 정보
+#notification:
+#    hostname : http://localhost:8383
+#    sendBizMsg : /aice/notification/messages/sendBizMessage
+#    sendMsg : /aice/notification/messages/sendMessage
+#    sendEmail : /aice/notification/sendEmail
+
+message-gw:
+    hostname : http://10.0.131.55:8282
+
+file-gw:
+    #hostname: http://127.0.0.1:8101
+    hostname: http://10.0.131.55:8101
+    context-path: /upload/attach/file
+
+voice-gw:
+    hostname: http://13.125.253.195:2188
+    context-path: /
+    vgw-id: 2
+
+data-go-kr:
+    service-key: 4fncWMhVhrVNoXU0I1UYVdavnsjvHPdGJQT8yRI2YMKvYerCKgEXcky1v2C1ByQYe9g0%2FrpdYZk3w6DYpiLFHg%3D%3D # bgso777 개인 개정의 인증키
+    hostname: http://apis.data.go.kr
+
+biz-msg-kr:
+#    hostname: https://alimtalk-api.bizmsg.kr
+    hostname: https://dev-alimtalk-api.bizmsg.kr:1443
+
+
+feign:
+    client:
+        config:
+            default:
+                loggerLevel: FULL
+    compression:
+        request:
+            enabled: true
+        response:
+            enabled: true
+            useGzipDecoder: true
+
+
+
+
+
+
